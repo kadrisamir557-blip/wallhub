@@ -134,8 +134,26 @@ function render(){
 function toggle(id){favs.has(id)?favs.delete(id):favs.add(id);saveFavs()}
 function open(id){
   const w=WALLPAPERS[id],d=$("dlg");$("lbImg").src=w.thumb;$("lbImg").alt=w.title;$("lbT").textContent=w.title;$("lbA").textContent="@"+w.author;$("lbC").textContent=w.cat;$("lbD").textContent=w.dev==="pc"?"PC · horizontal":"Móvil · vertical";$("lbR").textContent=w.res;
-  const a=$("lbDl");if(w.src){a.href=w.src;a.removeAttribute("aria-disabled");$("lbN").textContent=""}else{a.removeAttribute("href");a.setAttribute("aria-disabled","true");$("lbN").textContent="Imagen de muestra."}
+  const a=$("lbDl");if(w.src){a.href=w.src;a.onclick=e=>{e.preventDefault();dl(w,a)};a.removeAttribute("aria-disabled");$("lbN").textContent=""}else{a.removeAttribute("href");a.setAttribute("aria-disabled","true");$("lbN").textContent="Imagen de muestra."}
   const f=$("lbFav");f.textContent=favs.has(id)?"♥ Guardado":"♥ Guardar";f.onclick=()=>{toggle(id);f.textContent=favs.has(id)?"♥ Guardado":"♥ Guardar";render()};d.showModal();
+}
+async function dl(w,btn){
+  const ext=(w.src.split("?")[0].match(/\.(\w{3,4})$/)||[,"png"])[1].toLowerCase();
+  const name=(w.title||"wallpaper").replace(/[^\p{L}\d _-]+/gu,"").trim().replace(/\s+/g,"-")+"-"+w.res.replace("×","x")+"."+ext;
+  const label=btn.textContent;let handle=null;
+  try{
+    /* Chrome y Edge de escritorio: abre el cuadro "Guardar como" para elegir carpeta */
+    if(window.showSaveFilePicker){
+      try{handle=await showSaveFilePicker({suggestedName:name})}
+      catch(e){if(e.name==="AbortError")return}
+    }
+    btn.textContent="Descargando…";
+    const r=await fetch(w.src);if(!r.ok)throw new Error("fetch");
+    const blob=await r.blob();
+    if(handle){const wr=await handle.createWritable();await wr.write(blob);await wr.close()}
+    else{const u=URL.createObjectURL(blob),x=document.createElement("a");x.href=u;x.download=name;document.body.appendChild(x);x.click();x.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
+  }catch(e){window.open(w.src,"_blank","noopener")}
+  finally{btn.textContent=label}
 }
 $("grid").onclick=e=>{const c=e.target.closest(".card");if(c)open(+c.dataset.id)};
 $("chips").onclick=e=>{const b=e.target.closest("[data-cat]");if(!b)return;cat=b.dataset.cat;chips();render()};
@@ -155,3 +173,4 @@ fetch("/api/wallpapers").then(r=>r.ok?r.json():Promise.reject()).then(data=>{
 </script>
 </body>
 </html>
+
