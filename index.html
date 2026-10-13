@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wallhub — wallpapers para PC y móvil</title>
+<meta name="description" content="Wallhub: wallpapers de la comunidad para PC y móvil.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f4bff'/%3E%3Cpath d='M7 10l4 12 5-9 5 9 4-12' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f3f5;--surface:#fff;--ink:#15171c;--mute:#6b7280;--line:#dcdfe4;--accent:#2f4bff;--accent-ink:#fff;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--surface:#191c22;--ink:#eef0f3;--mute:#98a0ad;--line:#2a2e37;--accent:#7b8dff;--accent-ink:#0b0d14;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--surface:#191c22;--ink:#eef0f3;--mute:#98a0ad;--line:#2a2e37;--accent:#7b8dff;--accent-ink:#0b0d14;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+button,input{font:inherit;color:inherit}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:1500px;margin:0 auto;padding:14px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.5rem;letter-spacing:-.03em;margin-right:8px}
+.search{flex:1;min-width:180px;max-width:460px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.search:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:9px 14px;cursor:pointer;color:var(--mute)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chips{max-width:1500px;margin:0 auto;padding:0 20px 14px;display:flex;gap:8px;overflow-x:auto}
+.chip{flex:none;border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--mute)}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+main{max-width:1500px;margin:0 auto;padding:22px 20px 60px}
+.meta{color:var(--mute);margin:0 0 16px}
+.grid{columns:5 220px;column-gap:16px}
+.card{break-inside:avoid;margin:0 0 16px;position:relative;border-radius:10px;overflow:hidden;background:var(--surface);cursor:zoom-in;border:0;padding:0;display:block;width:100%;text-align:left}
+.card img{display:block;width:100%;height:auto}
+.card .ov{position:absolute;inset:auto 0 0 0;padding:28px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;opacity:0;transition:opacity .15s;font-size:.85rem}
+.card:hover .ov,.card:focus-visible .ov{opacity:1}
+.ov b{display:block;font-size:.95rem}
+.fav{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;cursor:pointer;opacity:0;font-size:1rem}
+.card:hover .fav,.fav.on,.fav:focus-visible{opacity:1}
+.fav.on{background:var(--accent);color:var(--accent-ink)}
+@media (hover:none){.card .ov,.fav{opacity:1}.card .ov{padding-top:18px}}
+.empty{text-align:center;color:var(--mute);padding:80px 0}
+dialog{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:14px;max-width:min(1100px,94vw);width:100%;max-height:92vh;overflow:auto}
+dialog::backdrop{background:rgba(8,10,14,.75)}
+.lb{display:grid;grid-template-columns:minmax(0,1fr) 280px}
+.lb .pic{background:#000;display:flex;align-items:center;justify-content:center;max-height:88vh}
+.lb .pic img{max-width:100%;max-height:88vh;display:block}
+.info{padding:22px;display:flex;flex-direction:column;gap:12px}
+.info h2{margin:0;font-size:1.4rem;letter-spacing:-.02em}
+.info dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;color:var(--mute)}
+.info dd{margin:0;color:var(--ink)}
+.btn{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:none;cursor:pointer;text-align:center;text-decoration:none;color:var(--ink)}
+.btn.main{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+.note{font-size:.8rem;color:var(--mute)}
+@media (max-width:760px){.lb{grid-template-columns:1fr}.lb .pic{max-height:60vh}.lb .pic img{max-height:60vh}.grid{columns:2 140px;column-gap:10px}.card{margin-bottom:10px}.bar{padding:12px 14px}.chips,main{padding-left:14px;padding-right:14px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <span class="logo">Wallhub</span>
+    <input class="search" id="q" type="search" placeholder="Buscar por título o autor" aria-label="Buscar">
+    <div class="seg" role="group" aria-label="Dispositivo">
+      <button data-dev="all" aria-pressed="true">Todo</button>
+      <button data-dev="pc" aria-pressed="false">PC</button>
+      <button data-dev="movil" aria-pressed="false">Móvil</button>
+    </div>
+    <button class="chip" id="favBtn" aria-pressed="false">♥ Guardados</button>
+  </div>
+  <div class="chips" id="chips"></div>
+</header>
+<main>
+  <p class="meta" id="meta"></p>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>No hay wallpapers con esos filtros. Prueba otra categoría o borra la búsqueda.</div>
+</main>
+<dialog id="dlg" aria-label="Detalle del wallpaper">
+  <div class="lb">
+    <div class="pic"><img id="lbImg" alt=""></div>
+    <div class="info">
+      <h2 id="lbT"></h2>
+      <dl><dt>Autor</dt><dd id="lbA"></dd><dt>Categoría</dt><dd id="lbC"></dd><dt>Formato</dt><dd id="lbD"></dd><dt>Resolución</dt><dd id="lbR"></dd></dl>
+      <a class="btn main" id="lbDl" target="_blank" rel="noopener" download>Descargar original</a>
+      <button class="btn" id="lbFav">♥ Guardar</button>
+      <button class="btn" id="lbX">Cerrar</button>
+      <p class="note" id="lbN"></p>
+    </div>
+  </div>
+</dialog>
+<script>
+/* ============ CONFIGURACIÓN ============
+Cada wallpaper: {title, author, cat, dev:"pc"|"movil", res:"3840×2160", src:"URL de la imagen"}
+Si no hay "src", se genera una imagen de muestra. Para usar tus fotos de Discord,
+rellena WALLPAPERS con las URLs (ver instrucciones al final de la respuesta). */
+const WALLPAPERS = [];
+
+const CATS = {
+  Abstracto:[["#2f4bff","#ff4f8b","#ffb84a","#16c8b0"],["#6a3df0","#f06ac2","#3dd1f0","#f0c23d"]],
+  Naturaleza:[["#f6c58b","#e0836a","#5a4a78","#23305a"],["#bfe3d0","#4f9a82","#25544a","#10282a"]],
+  Ciudad:[["#ff7a59","#b23a6b","#3b2a6e","#101436"],["#8fd3ff","#4b7fd1","#2a2f6e","#0e1030"]],
+  Minimal:[["#ece7df","#d8cfc2","#c2b5a3","#1c1c1c"],["#dfe7f0","#b9c8dc","#8aa0bf","#16202e"]],
+  Oscuro:[["#05060a","#1a1033","#3a1c6e","#7b3dff"],["#04080a","#0a2a2e","#0f6a62","#2ee6c4"]]
+};
+const AUTHORS=["lunaa","nico_ph","kaizen","mara.v","tomás","ivyroot","dario","sofi_k"];
+const TITLES={Abstracto:["Corriente","Prisma","Marea","Fusión","Vórtice","Aurora"],Naturaleza:["Cresta","Valle azul","Bruma","Duna","Horizonte","Cumbres"],Ciudad:["Noche 23:00","Skyline","Neón","Avenida","Distrito","Azotea"],Minimal:["Papel","Círculo","Sombra","Arena","Línea","Calma"],Oscuro:["Vacío","Brasa","Eclipse","Pulso","Ceniza","Nebulosa"]};
+
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function art(cat,dev,seed){
+  const W=dev==="pc"?1600:900,H=dev==="pc"?900:1900,r=rng(seed),P=CATS[cat],c=P[Math.floor(r()*P.length)];
+  const R=()=>r();let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"><defs><linearGradient id="g" x1="0" y1="0" x2="${R()}" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[3]}"/></linearGradient><filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${W/9}"/></filter></defs><rect width="${W}" height="${H}" fill="url(#g)"/>`;
+  const m=Math.max(W,H);
+  if(cat==="Abstracto"||cat==="Oscuro"){for(let i=0;i<5;i++)s+=`<circle cx="${R()*W}" cy="${R()*H}" r="${m*(.14+R()*.22)}" fill="${c[1+i%3]}" opacity="${cat==="Oscuro"?.55:.85}" filter="url(#b)"/>`}
+  else if(cat==="Naturaleza"){s+=`<circle cx="${W*(.25+R()*.5)}" cy="${H*.32}" r="${m*.09}" fill="${c[0]}" opacity=".9"/>`;for(let i=0;i<4;i++){let y=H*(.5+i*.12),d=`M0 ${H} L0 ${y}`;for(let x=0;x<=W;x+=W/6)d+=` L${x} ${y-R()*H*.16}`;s+=`<path d="${d} L${W} ${H}Z" fill="${c[1+Math.min(i,2)]}" opacity="${.5+i*.15}"/>`}}
+  else if(cat==="Ciudad"){s+=`<circle cx="${W*.7}" cy="${H*.3}" r="${m*.1}" fill="${c[0]}" filter="url(#b)"/>`;let x=0;while(x<W){const w=W*(.04+R()*.07),h=H*(.2+R()*.4);s+=`<rect x="${x}" y="${H-h}" width="${w}" height="${h}" fill="${c[3]}" opacity=".92"/>`;for(let k=0;k<4;k++)s+=`<rect x="${x+w*.2}" y="${H-h+R()*h*.8}" width="${w*.12}" height="${H*.008}" fill="${c[0]}" opacity=".8"/>`;x+=w*(.9+R()*.2)}}
+  else{s+=`<circle cx="${W/2}" cy="${H*(.4+R()*.2)}" r="${m*(.12+R()*.1)}" fill="${c[3]}" opacity=".9"/><rect x="0" y="${H*.72}" width="${W}" height="${H*.28}" fill="${c[2]}" opacity=".5"/>`}
+  return "data:image/svg+xml;utf8,"+encodeURIComponent(s+"</svg>");
+}
+(function seed(){if(WALLPAPERS.length)return;let n=1;Object.keys(CATS).forEach(cat=>{TITLES[cat].forEach((t,i)=>{const dev=i%3===2?"movil":(i%3===1&&cat!=="Minimal"?"movil":"pc");WALLPAPERS.push({title:t,author:AUTHORS[(n*3)%AUTHORS.length],cat,dev,res:dev==="pc"?"3840×2160":"1440×3040",seed:n*97})  ;n++})})})();
+WALLPAPERS.forEach((w,i)=>{w.id=i;w.thumb=w.src||art(w.cat,w.dev,w.seed||i+1)});
+
+let dev="all",cat="Todo",q="",onlyFav=false,favs=new Set();
+try{favs=new Set(JSON.parse(localStorage.getItem("fondo-favs")||"[]"))}catch(e){}
+const $=id=>document.getElementById(id);
+function saveFavs(){try{localStorage.setItem("fondo-favs",JSON.stringify([...favs]))}catch(e){}}
+function chips(){const cs=["Todo",...new Set(WALLPAPERS.map(w=>w.cat))];$("chips").innerHTML=cs.map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${c===cat}">${c}</button>`).join("")}
+function render(){
+  const list=WALLPAPERS.filter(w=>(dev==="all"||w.dev===dev)&&(cat==="Todo"||w.cat===cat)&&(!onlyFav||favs.has(w.id))&&(w.title+" "+w.author).toLowerCase().includes(q));
+  $("grid").innerHTML=list.map(w=>`<div class="card-wrap" style="break-inside:avoid"><button class="card" data-id="${w.id}" aria-label="Abrir ${w.title}"><img src="${w.thumb}" ${w.w?`width="${w.w}" height="${w.h}"`:""} alt="${w.title}, wallpaper de ${w.cat.toLowerCase()}" loading="lazy"><span class="ov"><b>${w.title}</b>@${w.author} · ${w.res}</span></button></div>`).join("");
+  $("grid").querySelectorAll(".card-wrap").forEach((el,i)=>{const w=list[i],b=document.createElement("button");b.className="fav"+(favs.has(w.id)?" on":"");b.textContent="♥";b.setAttribute("aria-label","Guardar "+w.title);b.onclick=e=>{e.stopPropagation();toggle(w.id);render()};el.firstChild.after(b);el.style.position="relative";el.style.marginBottom="16px"});
+  $("empty").hidden=list.length>0;$("meta").textContent=list.length+" wallpapers"+(dev!=="all"?" para "+(dev==="pc"?"PC":"móvil"):"");
+}
+function toggle(id){favs.has(id)?favs.delete(id):favs.add(id);saveFavs()}
+function open(id){
+  const w=WALLPAPERS[id],d=$("dlg");$("lbImg").src=w.thumb;$("lbImg").alt=w.title;$("lbT").textContent=w.title;$("lbA").textContent="@"+w.author;$("lbC").textContent=w.cat;$("lbD").textContent=w.dev==="pc"?"PC · horizontal":"Móvil · vertical";$("lbR").textContent=w.res;
+  const a=$("lbDl");if(w.src){a.href=w.src;a.removeAttribute("aria-disabled");$("lbN").textContent=""}else{a.removeAttribute("href");a.setAttribute("aria-disabled","true");$("lbN").textContent="Imagen de muestra."}
+  const f=$("lbFav");f.textContent=favs.has(id)?"♥ Guardado":"♥ Guardar";f.onclick=()=>{toggle(id);f.textContent=favs.has(id)?"♥ Guardado":"♥ Guardar";render()};d.showModal();
+}
+$("grid").onclick=e=>{const c=e.target.closest(".card");if(c)open(+c.dataset.id)};
+$("chips").onclick=e=>{const b=e.target.closest("[data-cat]");if(!b)return;cat=b.dataset.cat;chips();render()};
+document.querySelector(".seg").onclick=e=>{const b=e.target.closest("[data-dev]");if(!b)return;dev=b.dataset.dev;document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
+$("q").oninput=e=>{q=e.target.value.toLowerCase().trim();render()};
+$("favBtn").onclick=e=>{onlyFav=!onlyFav;e.currentTarget.setAttribute("aria-pressed",onlyFav);render()};
+$("lbX").onclick=()=>$("dlg").close();
+$("dlg").onclick=e=>{if(e.target===$("dlg"))$("dlg").close()};
+chips();render();
+/* Carga los wallpapers reales del canal de Discord (si la API está disponible) */
+fetch("/api/wallpapers").then(r=>r.ok?r.json():Promise.reject()).then(data=>{
+  if(!Array.isArray(data))return;
+  WALLPAPERS.length=0;data.forEach((w,i)=>{w.id=i;w.thumb=w.src;WALLPAPERS.push(w)});
+  chips();render();
+  if(!data.length)$("empty").textContent="Aún no hay wallpapers. Sube una imagen al canal de Discord y aparecerá aquí en unos minutos.",$("empty").hidden=false;
+}).catch(()=>{/* sin API: se queda la demo */});
+</script>
+</body>
+</html>
